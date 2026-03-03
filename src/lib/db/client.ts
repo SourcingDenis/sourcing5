@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Fall back to placeholder values at build time so module evaluation doesn't throw.
+// Real values must be provided via environment variables at runtime.
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -92,6 +92,7 @@ export type Database = {
           id: string;
           user_id: string;
           req_id: string;
+          priority: 'low' | 'medium' | 'high' | 'critical';
           estimated_hours_per_week: number;
           status: 'active' | 'paused' | 'closed';
           created_at: string;
@@ -101,15 +102,42 @@ export type Database = {
           id?: string;
           user_id: string;
           req_id: string;
+          priority?: 'low' | 'medium' | 'high' | 'critical';
           estimated_hours_per_week: number;
           status?: 'active' | 'paused' | 'closed';
           created_at?: string;
           updated_at?: string;
         };
         Update: {
+          priority?: 'low' | 'medium' | 'high' | 'critical';
           estimated_hours_per_week?: number;
           status?: 'active' | 'paused' | 'closed';
           updated_at?: string;
+        };
+      };
+      capacity_snapshots: {
+        Row: {
+          id: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at?: string;
+        };
+        Update: {
+          total_capacity_hours?: number;
+          allocated_hours?: number;
+          load_ratio?: number;
         };
       };
     };

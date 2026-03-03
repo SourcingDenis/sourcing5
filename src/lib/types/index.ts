@@ -7,4 +7,6 @@ export type {
   ExecutiveSummary,
   CapacityMetrics,
   TeamCapacityMetrics,
+  UserLoad,
+  CapacitySnapshot,
 } from './metrics';

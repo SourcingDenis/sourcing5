@@ -92,6 +92,7 @@ export const assignmentsRepository = {
       .insert({
         user_id: input.userId,
         req_id: input.reqId,
+        priority: input.priority || 'medium',
         estimated_hours_per_week: input.estimatedHoursPerWeek,
         status: input.status || 'active',
       })
@@ -109,6 +110,7 @@ export const assignmentsRepository = {
   async updateAssignment(id: string, input: UpdateAssignmentInput): Promise<Assignment | null> {
     const updateData: Record<string, unknown> = {};
 
+    if (input.priority !== undefined) updateData.priority = input.priority;
     if (input.estimatedHoursPerWeek !== undefined) {
       updateData.estimated_hours_per_week = input.estimatedHoursPerWeek;
     }
@@ -147,6 +149,7 @@ function mapDbAssignmentToAssignment(dbAssignment: Record<string, unknown>): Ass
     id: dbAssignment.id as string,
     userId: dbAssignment.user_id as string,
     reqId: dbAssignment.req_id as string,
+    priority: (dbAssignment.priority as 'low' | 'medium' | 'high' | 'critical') || 'medium',
     estimatedHoursPerWeek: dbAssignment.estimated_hours_per_week as number,
     status: dbAssignment.status as 'active' | 'paused' | 'closed',
     createdAt: dbAssignment.created_at as string,
