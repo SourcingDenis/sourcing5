@@ -52,3 +52,12 @@ export function formatDateTime(dateString: string): string {
 export function formatLoadRatio(ratio: number): string {
   return `${(ratio * 100).toFixed(0)}%`;
 }
+
+export function formatRate(rate: number): string {
+  return `${(rate * 100).toFixed(0)}%`;
+}
+
+export function formatWeekLabel(weekStartDate: string): string {
+  const d = new Date(weekStartDate + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}

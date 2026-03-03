@@ -94,3 +94,38 @@ export const UpdateAssignmentSchema = z.object({
   estimatedHoursPerWeek: z.number().int().positive().optional(),
   status: z.enum(['active', 'paused', 'closed']).optional(),
 });
+
+// -------------------------------------------------------
+// Funnel Metrics
+// -------------------------------------------------------
+
+export const CreateFunnelMetricSchema = z.object({
+  userId:          z.string().uuid(),
+  reqId:           z.string().min(1),
+  weekStartDate:   z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  outreachSent:    z.number().int().min(0),
+  replies:         z.number().int().min(0),
+  positiveReplies: z.number().int().min(0),
+  screensBooked:   z.number().int().min(0).optional().default(0),
+}).refine((d) => d.replies <= d.outreachSent, {
+  message: 'replies cannot exceed outreachSent',
+  path: ['replies'],
+}).refine((d) => d.positiveReplies <= d.replies, {
+  message: 'positiveReplies cannot exceed replies',
+  path: ['positiveReplies'],
+});
+
+export const UpdateFunnelMetricSchema = z.object({
+  outreachSent:    z.number().int().min(0).optional(),
+  replies:         z.number().int().min(0).optional(),
+  positiveReplies: z.number().int().min(0).optional(),
+  screensBooked:   z.number().int().min(0).optional(),
+});
+
+// -------------------------------------------------------
+// App Settings
+// -------------------------------------------------------
+
+export const UpdateSettingSchema = z.object({
+  value: z.string(),
+});
