@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/helpers';
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: '📊' },
   { href: '/capacity', label: 'Capacity', icon: '⚙️' },
+  { href: '/capacity/weekly', label: 'Weekly View', icon: '📅' },
   { href: '/funnel', label: 'Funnel', icon: '🔍' },
   { href: '/one-on-one', label: 'OneOnOne', icon: '👥' },
   { href: '/quality', label: 'Quality', icon: '✓' },
@@ -24,7 +25,10 @@ export function Sidebar() {
       </div>
       <nav className="space-y-1 px-3">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive =
+            item.href === '/capacity'
+              ? pathname === '/capacity' || pathname === '/capacity/'
+              : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}

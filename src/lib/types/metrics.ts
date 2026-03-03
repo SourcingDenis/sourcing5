@@ -1,3 +1,23 @@
+import type { User } from './user';
+import type { Assignment } from './assignment';
+
+export interface UserLoad {
+  user: User;
+  assignedHours: number;
+  loadRatio: number;
+  assignments: Assignment[];
+}
+
+export interface CapacitySnapshot {
+  id: string;
+  userId: string;
+  weekStart: string;
+  totalCapacityHours: number;
+  allocatedHours: number;
+  loadRatio: number;
+  createdAt: string;
+}
+
 export interface MetricSnapshot {
   timestamp: string;
   totalCapacityHours: number;

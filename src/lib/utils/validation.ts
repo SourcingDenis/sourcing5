@@ -84,11 +84,13 @@ export const AssignmentSchema = z.object({
 export const CreateAssignmentSchema = z.object({
   userId: z.string().uuid(),
   reqId: z.string(),
+  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   estimatedHoursPerWeek: z.number().int().positive(),
   status: z.enum(['active', 'paused', 'closed']).optional(),
 });
 
 export const UpdateAssignmentSchema = z.object({
+  priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   estimatedHoursPerWeek: z.number().int().positive().optional(),
   status: z.enum(['active', 'paused', 'closed']).optional(),
 });
