@@ -62,3 +62,13 @@ export type {
   UpdateSettingInput,
   AshbyConfig,
 } from './funnel';
+export type {
+  Experiment,
+  ExperimentVariant,
+  ExperimentResult,
+  ExperimentStatus,
+  CreateExperimentInput,
+  UpdateExperimentInput,
+  CreateVariantInput,
+  CreateResultInput,
+} from './experiment';
