@@ -172,3 +172,32 @@ export const UpdateActionItemSchema = z.object({
   dueDate:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
   status:      z.enum(['open', 'done']).optional(),
 });
+
+// -------------------------------------------------------
+// Experiments
+// -------------------------------------------------------
+
+export const CreateExperimentSchema = z.object({
+  name:       z.string().min(1).max(255),
+  hypothesis: z.string().min(1),
+  startDate:  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  endDate:    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  ownerId:    z.string().uuid(),
+});
+
+export const UpdateExperimentSchema = z.object({
+  status:  z.enum(['active', 'completed']).optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+});
+
+export const CreateVariantSchema = z.object({
+  name:        z.string().min(1).max(255),
+  description: z.string().min(1),
+});
+
+export const CreateResultSchema = z.object({
+  variantId:       z.string().uuid(),
+  outreachSent:    z.number().int().min(0),
+  replies:         z.number().int().min(0),
+  positiveReplies: z.number().int().min(0),
+});
