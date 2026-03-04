@@ -105,6 +105,7 @@ export const usersRepository = {
     if (input.weeklyCapacityHours !== undefined) {
       updateData.weekly_capacity_hours = input.weeklyCapacityHours;
     }
+    if (input.isActive !== undefined) updateData.is_active = input.isActive;
     updateData.updated_at = new Date().toISOString();
 
     const { data, error } = await supabase
@@ -139,9 +140,10 @@ function mapDbUserToUser(dbUser: Record<string, unknown>): User {
     id: dbUser.id as string,
     name: dbUser.name as string,
     email: dbUser.email as string,
-    role: dbUser.role as 'lead' | 'sourcer',
+    role: dbUser.role as 'lead' | 'sourcer' | 'admin',
     managerId: (dbUser.manager_id as string | null) || null,
     weeklyCapacityHours: dbUser.weekly_capacity_hours as number,
+    isActive: dbUser.is_active !== false,
     createdAt: dbUser.created_at as string,
     updatedAt: dbUser.updated_at as string,
   };
