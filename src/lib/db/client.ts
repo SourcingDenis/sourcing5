@@ -201,6 +201,57 @@ export type Database = {
           updated_at?: string;
         };
       };
+      outreach_samples: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          message_text: string;
+          week_start_date: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          message_text: string;
+          week_start_date: string;
+          created_at?: string;
+        };
+        Update: {
+          message_text?: string;
+          week_start_date?: string;
+        };
+      };
+      quality_reviews: {
+        Row: {
+          id: string;
+          outreach_sample_id: string;
+          reviewer_id: string;
+          personalization_score: number;
+          relevance_score: number;
+          clarity_score: number;
+          cta_score: number;
+          overall_score: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          outreach_sample_id: string;
+          reviewer_id: string;
+          personalization_score: number;
+          relevance_score: number;
+          clarity_score: number;
+          cta_score: number;
+          created_at?: string;
+        };
+        Update: {
+          personalization_score?: number;
+          relevance_score?: number;
+          clarity_score?: number;
+          cta_score?: number;
+        };
+      };
     };
   };
 };

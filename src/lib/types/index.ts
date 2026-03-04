@@ -11,6 +11,20 @@ export type {
   CapacitySnapshot,
 } from './metrics';
 export type {
+  OutreachSample,
+  CreateOutreachSampleInput,
+  QualityReview,
+  CreateQualityReviewInput,
+  UpdateQualityReviewInput,
+  OutreachSampleWithReview,
+  QualityTrendPoint,
+  QualityCorrelationPoint,
+  QualityTrend,
+  SourcerQualitySummary,
+  QualityHighlights,
+  TeamQualitySummary,
+} from './quality';
+export type {
   FunnelMetric,
   CreateFunnelMetricInput,
   UpdateFunnelMetricInput,
