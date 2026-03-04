@@ -9,6 +9,12 @@ const supabaseAnonKey =
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Server-side admin client that bypasses RLS — use only in API routes
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
+
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
 export type Database = {
   public: {
     Tables: {

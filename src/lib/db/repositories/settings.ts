@@ -1,9 +1,9 @@
-import { supabase } from '../client';
+import { supabaseAdmin } from '../client';
 import type { AppSetting, UpdateSettingInput } from '@/lib/types';
 
 export const settingsRepository = {
   async getByKey(key: string): Promise<AppSetting | null> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('app_settings')
       .select('*')
       .eq('key', key)
@@ -18,7 +18,7 @@ export const settingsRepository = {
   },
 
   async listAll(): Promise<AppSetting[]> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('app_settings')
       .select('*')
       .order('key');
@@ -32,7 +32,7 @@ export const settingsRepository = {
   },
 
   async upsert(key: string, input: UpdateSettingInput): Promise<AppSetting | null> {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('app_settings')
       .upsert(
         { key, value: input.value, updated_at: new Date().toISOString() },
