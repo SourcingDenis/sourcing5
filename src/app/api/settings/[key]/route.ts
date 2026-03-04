@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { settingsRepository } from '@/lib/db/repositories/settings';
 import { UpdateSettingSchema } from '@/lib/utils/validation';
+import { encryptValue } from '@/lib/utils/encryption';
 
 export async function GET(
   _: NextRequest,
@@ -34,7 +35,13 @@ export async function PUT(
     );
   }
 
-  const setting = await settingsRepository.upsert(params.key, parsed.data);
+  // Encrypt sensitive values before storing
+  let valueToStore = parsed.data.value;
+  if (params.key === 'ashby_api_key' && valueToStore) {
+    valueToStore = encryptValue(valueToStore);
+  }
+
+  const setting = await settingsRepository.upsert(params.key, { value: valueToStore });
   if (!setting) {
     return NextResponse.json({ error: 'Failed to save setting' }, { status: 500 });
   }
