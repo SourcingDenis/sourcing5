@@ -40,3 +40,10 @@ tsconfig.tsbuildinfo
 
 # Supabase
 supabase/migrations/*.sql.bak
+
+# Netlify
+.netlify/
+netlify/functions/node_modules/
+
+# Claude Code
+.claude-code-session-start.sh
