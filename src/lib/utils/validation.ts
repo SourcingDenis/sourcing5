@@ -131,6 +131,11 @@ export const CreateResultSchema = z.object({
   positiveReplies: z.number().int().min(0),
 });
 
+export const UpdateExperimentSchema = z.object({
+  status:  z.enum(['active', 'completed']).optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional().nullable(),
+});
+
 // -------------------------------------------------------
 // Funnel Metrics
 // -------------------------------------------------------
