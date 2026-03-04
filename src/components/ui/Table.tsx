@@ -48,7 +48,7 @@ export function TableRow({ children, className }: TableRowProps) {
 }
 
 interface TableHeaderCellProps {
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
 }
 
