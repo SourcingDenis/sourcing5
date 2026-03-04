@@ -46,7 +46,7 @@ export function ExperimentListClient({ experiments, ownerOptions }: ExperimentLi
               <TableHeaderCell>Start Date</TableHeaderCell>
               <TableHeaderCell>Variants</TableHeaderCell>
               <TableHeaderCell>Best Reply Rate</TableHeaderCell>
-              <TableHeaderCell></TableHeaderCell>
+              <TableHeaderCell>{""}</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
