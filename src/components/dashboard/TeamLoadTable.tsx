@@ -10,18 +10,20 @@ import {
   TableCell,
 } from '@/components/ui/Table';
 import { LoadIndicator } from '@/components/ui/LoadIndicator';
+import { FunnelHealthBadge } from '@/components/funnel/FunnelHealthBadge';
 import { formatCapacityHours, formatRole } from '@/lib/utils/formatting';
 import { cn } from '@/lib/utils/helpers';
-import type { UserLoad } from '@/lib/types';
+import type { UserLoad, SourcerFunnelHealth } from '@/lib/types';
 
 type SortField = 'name' | 'role' | 'weeklyCapacityHours' | 'assignedHours' | 'loadRatio';
 
 interface TeamLoadTableProps {
   loads: UserLoad[];
   defaultSort?: SortField;
+  funnelHealth?: SourcerFunnelHealth[];
 }
 
-export function TeamLoadTable({ loads, defaultSort = 'loadRatio' }: TeamLoadTableProps) {
+export function TeamLoadTable({ loads, defaultSort = 'loadRatio', funnelHealth }: TeamLoadTableProps) {
   const [sortField, setSortField] = useState<SortField>(defaultSort);
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
 
@@ -65,6 +67,13 @@ export function TeamLoadTable({ loads, defaultSort = 'loadRatio' }: TeamLoadTabl
     return sortDir === 'asc' ? cmp : -cmp;
   });
 
+  const healthByUser = new Map(
+    (funnelHealth ?? []).map((h) => [h.userId, h])
+  );
+
+  const showFunnelColumn = Boolean(funnelHealth);
+  const colSpan = showFunnelColumn ? 7 : 6;
+
   function SortHeader({ field, label }: { field: SortField; label: string }) {
     const isActive = sortField === field;
     return (
@@ -95,11 +104,13 @@ export function TeamLoadTable({ loads, defaultSort = 'loadRatio' }: TeamLoadTabl
           <SortHeader field="assignedHours" label="Assigned (hrs)" />
           <TableHeaderCell>Available (hrs)</TableHeaderCell>
           <SortHeader field="loadRatio" label="Load" />
+          {showFunnelColumn && <TableHeaderCell>Funnel</TableHeaderCell>}
         </TableRow>
       </TableHead>
       <TableBody>
         {sorted.map((ul) => {
           const available = Math.max(ul.user.weeklyCapacityHours - ul.assignedHours, 0);
+          const health = healthByUser.get(ul.user.id);
           return (
             <TableRow key={ul.user.id}>
               <TableCell className="font-medium text-slate-900">{ul.user.name}</TableCell>
@@ -110,12 +121,25 @@ export function TeamLoadTable({ loads, defaultSort = 'loadRatio' }: TeamLoadTabl
               <TableCell>
                 <LoadIndicator loadRatio={ul.loadRatio} />
               </TableCell>
+              {showFunnelColumn && (
+                <TableCell>
+                  {health ? (
+                    <FunnelHealthBadge
+                      health={health.health}
+                      worstAlert={health.worstAlert}
+                      size="sm"
+                    />
+                  ) : (
+                    <span className="text-xs text-slate-400">—</span>
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           );
         })}
         {sorted.length === 0 && (
           <tr>
-            <td colSpan={6} className="px-4 py-8 text-center text-sm text-slate-500">
+            <td colSpan={colSpan} className="px-4 py-8 text-center text-sm text-slate-500">
               No team members found
             </td>
           </tr>

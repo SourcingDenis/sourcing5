@@ -1,3 +1,16 @@
-export interface FunnelModuleTypes {
-  placeholder: string;
-}
+export type {
+  FunnelMetric,
+  CreateFunnelMetricInput,
+  UpdateFunnelMetricInput,
+  FunnelRates,
+  AlertSeverity,
+  FunnelAlert,
+  FunnelMetricRow,
+  SourcerFunnelSummary,
+  TeamFunnelSummary,
+  FunnelTrendPoint,
+  SourcerFunnelHealth,
+  AshbySyncResult,
+  AppSetting,
+  AshbyConfig,
+} from '@/lib/types/funnel';

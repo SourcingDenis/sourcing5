@@ -69,6 +69,9 @@ export type Database = {
           location: string;
           priority: 'low' | 'medium' | 'high' | 'critical';
           created_at: string;
+          ashby_job_id: string | null;
+          ashby_status: string | null;
+          last_synced_at: string | null;
         };
         Insert: {
           id: string;
@@ -78,6 +81,9 @@ export type Database = {
           location: string;
           priority?: 'low' | 'medium' | 'high' | 'critical';
           created_at?: string;
+          ashby_job_id?: string | null;
+          ashby_status?: string | null;
+          last_synced_at?: string | null;
         };
         Update: {
           title?: string;
@@ -85,6 +91,9 @@ export type Database = {
           level?: string;
           location?: string;
           priority?: 'low' | 'medium' | 'high' | 'critical';
+          ashby_job_id?: string | null;
+          ashby_status?: string | null;
+          last_synced_at?: string | null;
         };
       };
       assignments: {
@@ -138,6 +147,58 @@ export type Database = {
           total_capacity_hours?: number;
           allocated_hours?: number;
           load_ratio?: number;
+        };
+      };
+      funnel_metrics: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          screens_booked: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+          screens_booked?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+          screens_booked?: number;
+          updated_at?: string;
+        };
+      };
+      app_settings: {
+        Row: {
+          key: string;
+          value: string;
+          description: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          value: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          value?: string;
+          description?: string | null;
+          updated_at?: string;
         };
       };
     };

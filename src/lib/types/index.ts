@@ -10,3 +10,23 @@ export type {
   UserLoad,
   CapacitySnapshot,
 } from './metrics';
+export type {
+  FunnelMetric,
+  CreateFunnelMetricInput,
+  UpdateFunnelMetricInput,
+  FunnelRates,
+  AlertSeverity,
+  FunnelAlert,
+  FunnelMetricRow,
+  SourcerFunnelSummary,
+  TeamFunnelSummary,
+  FunnelTrendPoint,
+  SourcerFunnelHealth,
+  AshbyJobPosting,
+  AshbyApplication,
+  AshbyListResponse,
+  AshbySyncResult,
+  AppSetting,
+  UpdateSettingInput,
+  AshbyConfig,
+} from './funnel';

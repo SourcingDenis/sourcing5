@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { getAllUsersLoad } from '@/lib/data/capacity';
+import { getSourcerFunnelHealthBadges } from '@/lib/data/funnel';
 import { assignmentsRepository } from '@/lib/db/repositories/assignments';
 import { reqsRepository } from '@/lib/db/repositories/reqs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -9,10 +10,11 @@ import { LoadIndicator } from '@/components/ui/LoadIndicator';
 import { formatCapacityHours, formatLoadRatio, formatDate } from '@/lib/utils/formatting';
 
 export default async function DashboardPage() {
-  const [usersLoad, activeAssignments, openReqs] = await Promise.all([
+  const [usersLoad, activeAssignments, openReqs, funnelHealth] = await Promise.all([
     getAllUsersLoad(),
     assignmentsRepository.listActiveAssignments(),
     reqsRepository.listOpenReqs(),
+    getSourcerFunnelHealthBadges(),
   ]);
 
   const sourcers = usersLoad.filter((ul) => ul.user.role === 'sourcer');
@@ -117,7 +119,7 @@ export default async function DashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <TeamLoadTable loads={usersLoad} defaultSort="loadRatio" />
+          <TeamLoadTable loads={usersLoad} defaultSort="loadRatio" funnelHealth={funnelHealth} />
         </CardContent>
       </Card>
 
