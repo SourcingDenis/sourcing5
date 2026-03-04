@@ -1,4 +1,5 @@
 import { settingsRepository } from '@/lib/db/repositories/settings';
+import { decryptValue } from '@/lib/utils/encryption';
 import type { AshbyJobPosting, AshbyApplication, AshbyListResponse } from './types';
 
 async function getAshbyConfig(): Promise<{ apiKey: string; baseUrl: string }> {
@@ -7,8 +8,17 @@ async function getAshbyConfig(): Promise<{ apiKey: string; baseUrl: string }> {
     settingsRepository.getByKey('ashby_base_url'),
   ]);
 
-  const apiKey = apiKeySetting?.value ?? '';
+  let apiKey = apiKeySetting?.value ?? '';
   const baseUrl = baseUrlSetting?.value || 'https://api.ashbyhq.com';
+
+  // Decrypt API key if it's encrypted (contains ':' separator)
+  if (apiKey && apiKey.includes(':')) {
+    try {
+      apiKey = decryptValue(apiKey);
+    } catch {
+      throw new Error('Failed to decrypt Ashby API key. The key may be corrupted.');
+    }
+  }
 
   if (!apiKey) {
     throw new Error(

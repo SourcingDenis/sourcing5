@@ -1,4 +1,4 @@
-export type { User, CreateUserInput, UpdateUserInput, UserWithCapacity, UserRole } from './user';
+export type { User, CreateUserInput, UpdateUserInput, UserWithCapacity, UserRole, AshbyRole, SourcerRoleAssignment } from './user';
 export type { Team, CreateTeamInput, UpdateTeamInput } from './team';
 export type { Req, CreateReqInput, UpdateReqInput, PriorityLevel } from './req';
 export type { Assignment, CreateAssignmentInput, UpdateAssignmentInput, AssignmentStatus } from './assignment';
@@ -10,6 +10,8 @@ export type {
   UserLoad,
   CapacitySnapshot,
 } from './metrics';
+
+// --- Resolved Conflict: Combined One-on-One and Quality Types ---
 export type {
   OneOnOne,
   CreateOneOnOneInput,
@@ -23,6 +25,23 @@ export type {
   GeneratedAgenda,
   OneOnOneDashboardStats,
 } from './oneOnOne';
+
+export type {
+  OutreachSample,
+  CreateOutreachSampleInput,
+  QualityReview,
+  CreateQualityReviewInput,
+  UpdateQualityReviewInput,
+  OutreachSampleWithReview,
+  QualityTrendPoint,
+  QualityCorrelationPoint,
+  QualityTrend,
+  SourcerQualitySummary,
+  QualityHighlights,
+  TeamQualitySummary,
+} from './quality';
+// ----------------------------------------------------------------
+
 export type {
   FunnelMetric,
   CreateFunnelMetricInput,

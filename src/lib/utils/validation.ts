@@ -4,9 +4,10 @@ export const UserSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1).max(255),
   email: z.string().email(),
-  role: z.enum(['lead', 'sourcer']),
+  role: z.enum(['lead', 'sourcer', 'admin']),
   managerId: z.string().uuid().nullable(),
   weeklyCapacityHours: z.number().int().positive().default(40),
+  isActive: z.boolean().default(true),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
@@ -14,7 +15,7 @@ export const UserSchema = z.object({
 export const CreateUserSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().email(),
-  role: z.enum(['lead', 'sourcer']),
+  role: z.enum(['lead', 'sourcer', 'admin']),
   managerId: z.string().uuid().optional(),
   weeklyCapacityHours: z.number().int().positive().optional(),
 });
@@ -22,9 +23,20 @@ export const CreateUserSchema = z.object({
 export const UpdateUserSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   email: z.string().email().optional(),
-  role: z.enum(['lead', 'sourcer']).optional(),
+  role: z.enum(['lead', 'sourcer', 'admin']).optional(),
   managerId: z.string().uuid().nullable().optional(),
   weeklyCapacityHours: z.number().int().positive().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export const AssignRoleSchema = z.object({
+  userId: z.string().uuid(),
+  ashbyRoleId: z.string().optional(),
+  reqId: z.string().optional(),
+  notes: z.string().optional(),
+  assignedBy: z.string().uuid().optional(),
+}).refine((d) => d.ashbyRoleId || d.reqId, {
+  message: 'Either ashbyRoleId or reqId must be provided',
 });
 
 export const TeamSchema = z.object({
