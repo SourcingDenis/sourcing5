@@ -181,13 +181,13 @@ export const CreateExperimentSchema = z.object({
   name:       z.string().min(1).max(255),
   hypothesis: z.string().min(1),
   startDate:  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
-  endDate:    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  endDate:    z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional().nullable(),
   ownerId:    z.string().uuid(),
 });
 
 export const UpdateExperimentSchema = z.object({
   status:  z.enum(['active', 'completed']).optional(),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').nullable().optional(),
 });
 
 export const CreateVariantSchema = z.object({
