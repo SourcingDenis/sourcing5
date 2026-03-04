@@ -129,3 +129,34 @@ export const UpdateFunnelMetricSchema = z.object({
 export const UpdateSettingSchema = z.object({
   value: z.string(),
 });
+
+// -------------------------------------------------------
+// OneOnOne Engine
+// -------------------------------------------------------
+
+export const CreateOneOnOneSchema = z.object({
+  managerId:   z.string().uuid(),
+  reportId:    z.string().uuid(),
+  scheduledAt: z.string().datetime({ message: 'scheduledAt must be a valid ISO datetime' }),
+  summary:     z.string().max(10_000).optional(),
+});
+
+export const UpdateOneOnOneSchema = z.object({
+  scheduledAt: z.string().datetime().optional(),
+  completedAt: z.string().datetime().nullable().optional(),
+  summary:     z.string().max(10_000).nullable().optional(),
+});
+
+export const CreateActionItemSchema = z.object({
+  oneOnOneId:  z.string().uuid().nullable().optional(),
+  ownerId:     z.string().uuid(),
+  description: z.string().min(1).max(2_000),
+  dueDate:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  status:      z.enum(['open', 'done']).optional(),
+});
+
+export const UpdateActionItemSchema = z.object({
+  description: z.string().min(1).max(2_000).optional(),
+  dueDate:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  status:      z.enum(['open', 'done']).optional(),
+});

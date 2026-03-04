@@ -11,6 +11,19 @@ export type {
   CapacitySnapshot,
 } from './metrics';
 export type {
+  OneOnOne,
+  CreateOneOnOneInput,
+  UpdateOneOnOneInput,
+  OneOnOneWithParticipants,
+  ActionItem,
+  ActionItemStatus,
+  CreateActionItemInput,
+  UpdateActionItemInput,
+  AgendaSection,
+  GeneratedAgenda,
+  OneOnOneDashboardStats,
+} from './oneOnOne';
+export type {
   FunnelMetric,
   CreateFunnelMetricInput,
   UpdateFunnelMetricInput,

@@ -201,6 +201,62 @@ export type Database = {
           updated_at?: string;
         };
       };
+      one_on_ones: {
+        Row: {
+          id: string;
+          manager_id: string;
+          report_id: string;
+          scheduled_at: string;
+          completed_at: string | null;
+          summary: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          manager_id: string;
+          report_id: string;
+          scheduled_at: string;
+          completed_at?: string | null;
+          summary?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          scheduled_at?: string;
+          completed_at?: string | null;
+          summary?: string | null;
+          updated_at?: string;
+        };
+      };
+      action_items: {
+        Row: {
+          id: string;
+          one_on_one_id: string | null;
+          owner_id: string;
+          description: string;
+          due_date: string;
+          status: 'open' | 'done';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          one_on_one_id?: string | null;
+          owner_id: string;
+          description: string;
+          due_date: string;
+          status?: 'open' | 'done';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          description?: string;
+          due_date?: string;
+          status?: 'open' | 'done';
+          updated_at?: string;
+        };
+      };
     };
   };
 };
