@@ -13,6 +13,7 @@ const navItems = [
   { href: '/quality', label: 'Quality', icon: '✓' },
   { href: '/experiments', label: 'Experiments', icon: '🧪' },
   { href: '/insights', label: 'Insights', icon: '💡' },
+  { href: '/admin', label: 'Admin', icon: '🛡️' },
 ];
 
 export function Sidebar() {
