@@ -141,3 +141,38 @@ export const UpdateFunnelMetricSchema = z.object({
 export const UpdateSettingSchema = z.object({
   value: z.string(),
 });
+
+// -------------------------------------------------------
+// Experiment Hub
+// -------------------------------------------------------
+
+export const CreateExperimentSchema = z.object({
+  name:       z.string().min(1, 'Name is required').max(200),
+  hypothesis: z.string().min(10, 'Hypothesis must be at least 10 characters').max(1000),
+  startDate:  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  endDate:    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+  ownerId:    z.string().uuid('ownerId must be a UUID'),
+});
+
+export const UpdateExperimentSchema = z.object({
+  status:  z.enum(['active', 'completed']).optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+});
+
+export const CreateVariantSchema = z.object({
+  name:        z.string().min(1, 'Variant name is required').max(100),
+  description: z.string().min(1, 'Description is required').max(500),
+});
+
+export const CreateResultSchema = z.object({
+  variantId:       z.string().uuid('variantId must be a UUID'),
+  outreachSent:    z.number().int().min(0),
+  replies:         z.number().int().min(0),
+  positiveReplies: z.number().int().min(0),
+}).refine(d => d.replies <= d.outreachSent, {
+  message: 'replies cannot exceed outreachSent',
+  path: ['replies'],
+}).refine(d => d.positiveReplies <= d.replies, {
+  message: 'positiveReplies cannot exceed replies',
+  path: ['positiveReplies'],
+});

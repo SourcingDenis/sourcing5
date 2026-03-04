@@ -252,6 +252,78 @@ export type Database = {
           cta_score?: number;
         };
       };
+      experiments: {
+        Row: {
+          id: string;
+          name: string;
+          hypothesis: string;
+          start_date: string;
+          end_date: string | null;
+          owner_id: string;
+          status: 'active' | 'completed';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          hypothesis: string;
+          start_date: string;
+          end_date?: string | null;
+          owner_id: string;
+          status?: 'active' | 'completed';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          status?: 'active' | 'completed';
+          end_date?: string | null;
+          updated_at?: string;
+        };
+      };
+      experiment_variants: {
+        Row: {
+          id: string;
+          experiment_id: string;
+          name: string;
+          description: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          experiment_id: string;
+          name: string;
+          description: string;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          description?: string;
+        };
+      };
+      experiment_results: {
+        Row: {
+          id: string;
+          variant_id: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          variant_id: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          created_at?: string;
+        };
+        Update: {
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+        };
+      };
     };
   };
 };
