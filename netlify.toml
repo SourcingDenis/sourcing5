@@ -16,11 +16,6 @@
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
 [dev]
   command = "npm run dev"
   port = 3000
