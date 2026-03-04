@@ -143,36 +143,32 @@ export const UpdateSettingSchema = z.object({
 });
 
 // -------------------------------------------------------
-// Experiment Hub
+// OneOnOne Engine
 // -------------------------------------------------------
 
-export const CreateExperimentSchema = z.object({
-  name:       z.string().min(1, 'Name is required').max(200),
-  hypothesis: z.string().min(10, 'Hypothesis must be at least 10 characters').max(1000),
-  startDate:  z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
-  endDate:    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-  ownerId:    z.string().uuid('ownerId must be a UUID'),
+export const CreateOneOnOneSchema = z.object({
+  managerId:   z.string().uuid(),
+  reportId:    z.string().uuid(),
+  scheduledAt: z.string().datetime({ message: 'scheduledAt must be a valid ISO datetime' }),
+  summary:     z.string().max(10_000).optional(),
 });
 
-export const UpdateExperimentSchema = z.object({
-  status:  z.enum(['active', 'completed']).optional(),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
+export const UpdateOneOnOneSchema = z.object({
+  scheduledAt: z.string().datetime().optional(),
+  completedAt: z.string().datetime().nullable().optional(),
+  summary:     z.string().max(10_000).nullable().optional(),
 });
 
-export const CreateVariantSchema = z.object({
-  name:        z.string().min(1, 'Variant name is required').max(100),
-  description: z.string().min(1, 'Description is required').max(500),
+export const CreateActionItemSchema = z.object({
+  oneOnOneId:  z.string().uuid().nullable().optional(),
+  ownerId:     z.string().uuid(),
+  description: z.string().min(1).max(2_000),
+  dueDate:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD'),
+  status:      z.enum(['open', 'done']).optional(),
 });
 
-export const CreateResultSchema = z.object({
-  variantId:       z.string().uuid('variantId must be a UUID'),
-  outreachSent:    z.number().int().min(0),
-  replies:         z.number().int().min(0),
-  positiveReplies: z.number().int().min(0),
-}).refine(d => d.replies <= d.outreachSent, {
-  message: 'replies cannot exceed outreachSent',
-  path: ['replies'],
-}).refine(d => d.positiveReplies <= d.replies, {
-  message: 'positiveReplies cannot exceed replies',
-  path: ['positiveReplies'],
+export const UpdateActionItemSchema = z.object({
+  description: z.string().min(1).max(2_000).optional(),
+  dueDate:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be YYYY-MM-DD').optional(),
+  status:      z.enum(['open', 'done']).optional(),
 });

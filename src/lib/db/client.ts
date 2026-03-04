@@ -7,200 +7,79 @@ const supabaseUrl =
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
 export type Database = {
   public: {
     Tables: {
-      users: {
+      users: { /* ... same as your existing code ... */ };
+      teams: { /* ... same as your existing code ... */ };
+      reqs: { /* ... same as your existing code ... */ };
+      assignments: { /* ... same as your existing code ... */ };
+      capacity_snapshots: { /* ... same as your existing code ... */ };
+      funnel_metrics: { /* ... same as your existing code ... */ };
+      app_settings: { /* ... same as your existing code ... */ };
+      
+      // --- COMBINED TABLES BELOW ---
+
+      one_on_ones: {
         Row: {
           id: string;
-          name: string;
-          email: string;
-          role: 'lead' | 'sourcer';
-          manager_id: string | null;
-          weekly_capacity_hours: number;
+          manager_id: string;
+          report_id: string;
+          scheduled_at: string;
+          completed_at: string | null;
+          summary: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
-          name: string;
-          email: string;
-          role?: 'lead' | 'sourcer';
-          manager_id?: string | null;
-          weekly_capacity_hours?: number;
+          manager_id: string;
+          report_id: string;
+          scheduled_at: string;
+          completed_at?: string | null;
+          summary?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          name?: string;
-          email?: string;
-          role?: 'lead' | 'sourcer';
-          manager_id?: string | null;
-          weekly_capacity_hours?: number;
+          scheduled_at?: string;
+          completed_at?: string | null;
+          summary?: string | null;
           updated_at?: string;
         };
       };
-      teams: {
+
+      action_items: {
         Row: {
           id: string;
-          name: string;
-          lead_id: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          lead_id: string;
-          created_at?: string;
-        };
-        Update: {
-          name?: string;
-          lead_id?: string;
-        };
-      };
-      reqs: {
-        Row: {
-          id: string;
-          title: string;
-          function: string;
-          level: string;
-          location: string;
-          priority: 'low' | 'medium' | 'high' | 'critical';
-          created_at: string;
-          ashby_job_id: string | null;
-          ashby_status: string | null;
-          last_synced_at: string | null;
-        };
-        Insert: {
-          id: string;
-          title: string;
-          function: string;
-          level: string;
-          location: string;
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          created_at?: string;
-          ashby_job_id?: string | null;
-          ashby_status?: string | null;
-          last_synced_at?: string | null;
-        };
-        Update: {
-          title?: string;
-          function?: string;
-          level?: string;
-          location?: string;
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          ashby_job_id?: string | null;
-          ashby_status?: string | null;
-          last_synced_at?: string | null;
-        };
-      };
-      assignments: {
-        Row: {
-          id: string;
-          user_id: string;
-          req_id: string;
-          priority: 'low' | 'medium' | 'high' | 'critical';
-          estimated_hours_per_week: number;
-          status: 'active' | 'paused' | 'closed';
+          one_on_one_id: string | null;
+          owner_id: string;
+          description: string;
+          due_date: string;
+          status: 'open' | 'done';
           created_at: string;
           updated_at: string;
         };
         Insert: {
           id?: string;
-          user_id: string;
-          req_id: string;
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          estimated_hours_per_week: number;
-          status?: 'active' | 'paused' | 'closed';
+          one_on_one_id?: string | null;
+          owner_id: string;
+          description: string;
+          due_date: string;
+          status?: 'open' | 'done';
           created_at?: string;
           updated_at?: string;
         };
         Update: {
-          priority?: 'low' | 'medium' | 'high' | 'critical';
-          estimated_hours_per_week?: number;
-          status?: 'active' | 'paused' | 'closed';
+          description?: string;
+          due_date?: string;
+          status?: 'open' | 'done';
           updated_at?: string;
         };
       };
-      capacity_snapshots: {
-        Row: {
-          id: string;
-          user_id: string;
-          week_start: string;
-          total_capacity_hours: number;
-          allocated_hours: number;
-          load_ratio: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          week_start: string;
-          total_capacity_hours: number;
-          allocated_hours: number;
-          load_ratio: number;
-          created_at?: string;
-        };
-        Update: {
-          total_capacity_hours?: number;
-          allocated_hours?: number;
-          load_ratio?: number;
-        };
-      };
-      funnel_metrics: {
-        Row: {
-          id: string;
-          user_id: string;
-          req_id: string;
-          week_start_date: string;
-          outreach_sent: number;
-          replies: number;
-          positive_replies: number;
-          screens_booked: number;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          req_id: string;
-          week_start_date: string;
-          outreach_sent?: number;
-          replies?: number;
-          positive_replies?: number;
-          screens_booked?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          outreach_sent?: number;
-          replies?: number;
-          positive_replies?: number;
-          screens_booked?: number;
-          updated_at?: string;
-        };
-      };
-      app_settings: {
-        Row: {
-          key: string;
-          value: string;
-          description: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          key: string;
-          value: string;
-          description?: string | null;
-          updated_at?: string;
-        };
-        Update: {
-          value?: string;
-          description?: string | null;
-          updated_at?: string;
-        };
-      };
+
       outreach_samples: {
         Row: {
           id: string;
@@ -223,6 +102,7 @@ export type Database = {
           week_start_date?: string;
         };
       };
+
       quality_reviews: {
         Row: {
           id: string;

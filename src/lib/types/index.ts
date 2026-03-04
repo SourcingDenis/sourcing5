@@ -10,6 +10,22 @@ export type {
   UserLoad,
   CapacitySnapshot,
 } from './metrics';
+
+// --- Resolved Conflict: Combined One-on-One and Quality Types ---
+export type {
+  OneOnOne,
+  CreateOneOnOneInput,
+  UpdateOneOnOneInput,
+  OneOnOneWithParticipants,
+  ActionItem,
+  ActionItemStatus,
+  CreateActionItemInput,
+  UpdateActionItemInput,
+  AgendaSection,
+  GeneratedAgenda,
+  OneOnOneDashboardStats,
+} from './oneOnOne';
+
 export type {
   OutreachSample,
   CreateOutreachSampleInput,
@@ -24,6 +40,8 @@ export type {
   QualityHighlights,
   TeamQualitySummary,
 } from './quality';
+// ----------------------------------------------------------------
+
 export type {
   FunnelMetric,
   CreateFunnelMetricInput,
