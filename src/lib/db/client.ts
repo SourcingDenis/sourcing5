@@ -21,7 +21,34 @@ export type Database = {
       users: { /* ... same as your existing code ... */ };
       teams: { /* ... same as your existing code ... */ };
       reqs: { /* ... same as your existing code ... */ };
-      assignments: { /* ... same as your existing code ... */ };
+      assignments: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          priority: string;
+          estimated_hours_per_week: number;
+          status: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          priority?: string;
+          estimated_hours_per_week: number;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          priority?: string;
+          estimated_hours_per_week?: number;
+          status?: string;
+          updated_at?: string;
+        };
+      };
       capacity_snapshots: { /* ... same as your existing code ... */ };
       funnel_metrics: { /* ... same as your existing code ... */ };
       app_settings: { /* ... same as your existing code ... */ };
