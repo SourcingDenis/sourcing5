@@ -449,6 +449,69 @@ export type Database = {
         };
         Relationships: [];
       };
+      pipeline_stages: {
+        Row: {
+          id: string;
+          req_id: string;
+          ashby_stage_id: string;
+          stage_name: string;
+          order_index: number;
+          candidate_count: number;
+          last_synced_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          req_id: string;
+          ashby_stage_id: string;
+          stage_name: string;
+          order_index?: number;
+          candidate_count?: number;
+          last_synced_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          stage_name?: string;
+          order_index?: number;
+          candidate_count?: number;
+          last_synced_at?: string;
+        };
+        Relationships: [];
+      };
+      interviews: {
+        Row: {
+          id: string;
+          req_id: string;
+          ashby_schedule_id: string;
+          application_id: string;
+          stage_name: string;
+          status: string;
+          scheduled_at: string;
+          completed_at: string | null;
+          last_synced_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          req_id: string;
+          ashby_schedule_id: string;
+          application_id: string;
+          stage_name: string;
+          status?: string;
+          scheduled_at: string;
+          completed_at?: string | null;
+          last_synced_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          stage_name?: string;
+          status?: string;
+          scheduled_at?: string;
+          completed_at?: string | null;
+          last_synced_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

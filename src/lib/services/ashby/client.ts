@@ -1,6 +1,13 @@
 import { settingsRepository } from '@/lib/db/repositories/settings';
 import { decryptValue } from '@/lib/utils/encryption';
-import type { AshbyJobPosting, AshbyApplication, AshbyListResponse } from './types';
+import type {
+  AshbyJobPosting,
+  AshbyApplication,
+  AshbyListResponse,
+  AshbyInterviewStage,
+  AshbyInterviewSchedule,
+  AshbyCandidate,
+} from './types';
 
 async function getAshbyConfig(): Promise<{ apiKey: string; baseUrl: string }> {
   const [apiKeySetting, baseUrlSetting] = await Promise.all([
@@ -94,6 +101,54 @@ export async function listAllApplicationsForJob(jobPostingId: string): Promise<A
 
   do {
     const res = await listApplicationsForJob(jobPostingId, cursor);
+    all.push(...res.results);
+    cursor = res.moreDataAvailable ? res.nextCursor : undefined;
+  } while (cursor);
+
+  return all;
+}
+
+export async function listInterviewStagesForJob(
+  jobId: string
+): Promise<AshbyListResponse<AshbyInterviewStage>> {
+  return ashbyPost<AshbyInterviewStage>('interviewStage.list', { jobId });
+}
+
+export async function listInterviewSchedules(
+  cursor?: string
+): Promise<AshbyListResponse<AshbyInterviewSchedule>> {
+  return ashbyPost<AshbyInterviewSchedule>('interviewSchedule.list', {
+    ...(cursor ? { cursor } : {}),
+  });
+}
+
+export async function listAllInterviewSchedules(): Promise<AshbyInterviewSchedule[]> {
+  const all: AshbyInterviewSchedule[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const res = await listInterviewSchedules(cursor);
+    all.push(...res.results);
+    cursor = res.moreDataAvailable ? res.nextCursor : undefined;
+  } while (cursor);
+
+  return all;
+}
+
+export async function listCandidates(
+  cursor?: string
+): Promise<AshbyListResponse<AshbyCandidate>> {
+  return ashbyPost<AshbyCandidate>('candidate.list', {
+    ...(cursor ? { cursor } : {}),
+  });
+}
+
+export async function listAllCandidates(): Promise<AshbyCandidate[]> {
+  const all: AshbyCandidate[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const res = await listCandidates(cursor);
     all.push(...res.results);
     cursor = res.moreDataAvailable ? res.nextCursor : undefined;
   } while (cursor);

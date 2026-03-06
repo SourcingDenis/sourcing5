@@ -72,3 +72,13 @@ export type {
   CreateVariantInput,
   CreateResultInput,
 } from './experiment';
+export type {
+  PipelineStage,
+  UpsertPipelineStageInput,
+  Interview,
+  UpsertInterviewInput,
+  StagePassthrough,
+  PipelineView,
+  InterviewSummary,
+  CandidateSourceCount,
+} from './pipeline';

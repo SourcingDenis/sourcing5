@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { syncJobPostings } from '@/lib/services/ashby/sync';
+import { syncJobPostings, syncPipelineAndInterviews } from '@/lib/services/ashby/sync';
 import { settingsRepository } from '@/lib/db/repositories/settings';
 
 export async function POST(request: NextRequest) {
@@ -22,9 +22,28 @@ export async function POST(request: NextRequest) {
     // body is optional — proceed without it
   }
 
-  const result = await syncJobPostings(weekStartDate);
+  // Run job posting sync first (updates reqs + screens_booked)
+  const jobResult = await syncJobPostings(weekStartDate);
 
-  // 207 = partial success when there are errors but some jobs synced
-  const status = result.errors.length > 0 && result.synced === 0 ? 500 : 200;
-  return NextResponse.json({ data: result }, { status });
+  // Then sync pipeline stages, interviews, and candidate sources
+  const pipelineResult = await syncPipelineAndInterviews();
+
+  const combinedErrors = [...jobResult.errors, ...pipelineResult.errors];
+  const status = combinedErrors.length > 0 && jobResult.synced === 0 ? 500 : 200;
+
+  return NextResponse.json(
+    {
+      data: {
+        jobs: jobResult,
+        pipeline: {
+          synced: pipelineResult.synced,
+          interviewsSynced: pipelineResult.interviewsSynced,
+          candidateSourceCounts: pipelineResult.candidateSourceCounts,
+          errors: pipelineResult.errors,
+        },
+        errors: combinedErrors,
+      },
+    },
+    { status }
+  );
 }
