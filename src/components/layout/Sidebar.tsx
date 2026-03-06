@@ -9,6 +9,7 @@ const navItems = [
   { href: '/capacity', label: 'Capacity', icon: '⚙️' },
   { href: '/capacity/weekly', label: 'Weekly View', icon: '📅' },
   { href: '/funnel', label: 'Funnel', icon: '🔍' },
+  { href: '/pipeline', label: 'Pipeline', icon: '📈' },
   { href: '/one-on-one', label: 'OneOnOne', icon: '👥' },
   { href: '/quality', label: 'Quality', icon: '✓' },
   { href: '/experiments', label: 'Experiments', icon: '🧪' },

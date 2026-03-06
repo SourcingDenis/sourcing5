@@ -56,3 +56,35 @@ export interface AshbySyncResult {
   updated: number;
   errors: string[];
 }
+
+// Interview stage (ordered pipeline step for a job)
+export interface AshbyInterviewStage {
+  id: string;
+  title: string;
+  orderIndex: number;
+  jobId: string;
+  type: string;
+}
+
+// Interview schedule (a scheduled/completed interview event)
+export interface AshbyInterviewSchedule {
+  id: string;
+  applicationId: string;
+  interviewStageId: string;
+  status: 'Scheduled' | 'Completed' | 'Cancelled' | 'NoShow';
+  startTime: string;
+  endTime: string;
+  createdAt: string;
+}
+
+// Candidate with source attribution
+export interface AshbyCandidate {
+  id: string;
+  name: string;
+  primaryEmailAddress?: string;
+  source?: {
+    id: string;
+    title: string;
+  };
+  createdAt: string;
+}

@@ -1,8 +1,17 @@
-import { listAllJobPostings, listAllApplicationsForJob } from './client';
+import {
+  listAllJobPostings,
+  listAllApplicationsForJob,
+  listInterviewStagesForJob,
+  listAllInterviewSchedules,
+  listAllCandidates,
+} from './client';
 import { supabase } from '@/lib/db/client';
 import { funnelMetricsRepository } from '@/lib/db/repositories/funnelMetrics';
+import { pipelineStagesRepository } from '@/lib/db/repositories/pipelineStages';
+import { interviewsRepository } from '@/lib/db/repositories/interviews';
 import { getWeekStartDate } from '@/lib/utils/helpers';
 import type { AshbyJobPosting, AshbySyncResult } from './types';
+import type { CandidateSourceCount } from '@/lib/types';
 
 const SCREEN_STAGE_KEYWORDS = ['screen', 'phone', 'interview', 'recruiter'];
 
@@ -95,6 +104,152 @@ export async function syncJobPostings(weekStartDate?: string): Promise<AshbySync
   }
 
   return result;
+}
+
+export interface PipelineSyncResult extends AshbySyncResult {
+  interviewsSynced: number;
+  candidateSourceCounts: CandidateSourceCount[];
+}
+
+export async function syncPipelineAndInterviews(): Promise<PipelineSyncResult> {
+  const result: PipelineSyncResult = {
+    synced: 0,
+    created: 0,
+    updated: 0,
+    errors: [],
+    interviewsSynced: 0,
+    candidateSourceCounts: [],
+  };
+
+  let postings: AshbyJobPosting[];
+  try {
+    postings = await listAllJobPostings();
+  } catch (err) {
+    result.errors.push(err instanceof Error ? err.message : 'Failed to fetch job postings');
+    return result;
+  }
+
+  // Build a map of applicationId -> reqId for interview schedule linking
+  const applicationToReq = new Map<string, string>();
+  // Build a map of stageId -> stageName for interview schedule linking
+  const stageIdToName = new Map<string, string>();
+
+  for (const posting of postings) {
+    const reqId = buildReqId(posting.id);
+
+    try {
+      // Fetch applications for this posting
+      const applications = await listAllApplicationsForJob(posting.id);
+
+      for (const app of applications) {
+        applicationToReq.set(app.id, reqId);
+      }
+
+      // Fetch interview stages (pipeline definition for the underlying job)
+      const stagesRes = await listInterviewStagesForJob(posting.jobId);
+      const stages = stagesRes.results ?? [];
+
+      // Count candidates per stage (by currentInterviewStageId)
+      const stageCounts = new Map<string, number>();
+      for (const app of applications) {
+        if (app.currentInterviewStageId) {
+          stageCounts.set(
+            app.currentInterviewStageId,
+            (stageCounts.get(app.currentInterviewStageId) ?? 0) + 1
+          );
+        }
+      }
+
+      // Upsert pipeline_stages rows
+      for (let i = 0; i < stages.length; i++) {
+        const stage = stages[i];
+        stageIdToName.set(stage.id, stage.title);
+        await pipelineStagesRepository.upsert({
+          reqId,
+          ashbyStageId: stage.id,
+          stageName: stage.title,
+          orderIndex: stage.orderIndex ?? i,
+          candidateCount: stageCounts.get(stage.id) ?? 0,
+        });
+      }
+
+      // Clean up stages no longer in Ashby
+      if (stages.length > 0) {
+        await pipelineStagesRepository.deleteStaleStages(
+          reqId,
+          stages.map((s) => s.id)
+        );
+      }
+
+      result.synced++;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      result.errors.push(`Pipeline sync for ${reqId}: ${msg}`);
+    }
+  }
+
+  // Sync interview schedules
+  try {
+    const schedules = await listAllInterviewSchedules();
+
+    for (const schedule of schedules) {
+      const reqId = applicationToReq.get(schedule.applicationId);
+      if (!reqId) continue; // skip schedules not linked to known reqs
+
+      const stageName = stageIdToName.get(schedule.interviewStageId) ?? 'Unknown Stage';
+
+      await interviewsRepository.upsert({
+        reqId,
+        ashbyScheduleId: schedule.id,
+        applicationId: schedule.applicationId,
+        stageName,
+        status: mapAshbyInterviewStatus(schedule.status),
+        scheduledAt: schedule.startTime,
+        completedAt:
+          schedule.status === 'Completed' ? schedule.endTime : null,
+      });
+
+      result.interviewsSynced++;
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    result.errors.push(`Interview schedule sync: ${msg}`);
+  }
+
+  // Sync candidate source breakdown
+  try {
+    const candidates = await listAllCandidates();
+    const sourceCounts = new Map<string, number>();
+
+    for (const candidate of candidates) {
+      const sourceTitle = candidate.source?.title ?? 'Unknown';
+      sourceCounts.set(sourceTitle, (sourceCounts.get(sourceTitle) ?? 0) + 1);
+    }
+
+    result.candidateSourceCounts = Array.from(sourceCounts.entries())
+      .map(([source, count]) => ({ source, count }))
+      .sort((a, b) => b.count - a.count);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    result.errors.push(`Candidate source sync: ${msg}`);
+  }
+
+  return result;
+}
+
+function mapAshbyInterviewStatus(
+  status: 'Scheduled' | 'Completed' | 'Cancelled' | 'NoShow'
+): 'scheduled' | 'completed' | 'cancelled' | 'no_show' {
+  switch (status) {
+    case 'Scheduled':
+      return 'scheduled';
+    case 'Completed':
+      return 'completed';
+    case 'Cancelled':
+      return 'cancelled';
+    case 'NoShow':
+      return 'no_show';
+  }
 }
 
 export async function getScreensBookedCount(
