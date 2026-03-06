@@ -16,7 +16,17 @@ export async function getAllUsersLoad(): Promise<UserLoad[]> {
       .eq('status', 'active'),
   ]);
 
-  const activeAssignments = assignmentsResult.data || [];
+  type RawAssignment = {
+    user_id: string;
+    req_id: string;
+    priority: string | null;
+    estimated_hours_per_week: number | null;
+    status: string | null;
+    id: string;
+    created_at: string | null;
+    updated_at: string | null;
+  };
+  const activeAssignments: RawAssignment[] = assignmentsResult.data ?? [];
 
   // Group assignments by userId
   const assignmentsByUser = new Map<string, typeof activeAssignments>();
