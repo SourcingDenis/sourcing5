@@ -38,7 +38,7 @@ export async function getAllUsersLoad(): Promise<UserLoad[]> {
 
   return users.map((user) => {
     const userAssignments = assignmentsByUser.get(user.id) ?? [];
-    const assignedHours = userAssignments.reduce((sum, a) => sum + a.estimated_hours_per_week, 0);
+    const assignedHours = userAssignments.reduce((sum, a) => sum + (a.estimated_hours_per_week ?? 0), 0);
     const loadRatio = user.weeklyCapacityHours > 0 ? assignedHours / user.weeklyCapacityHours : 0;
 
     return {
@@ -113,16 +113,29 @@ export async function getAllAssignmentsWithDetails() {
     return [];
   }
 
-  return (data || []).map((a) => ({
+  type JoinedAssignment = {
+    id: string;
+    user_id: string;
+    req_id: string;
+    priority: string | null;
+    estimated_hours_per_week: number | null;
+    status: string | null;
+    created_at: string | null;
+    updated_at: string | null;
+    users: { id: string; name: string } | null;
+    reqs: { id: string; title: string } | null;
+  };
+
+  return ((data as JoinedAssignment[]) || []).map((a) => ({
     id: a.id,
     userId: a.user_id,
     reqId: a.req_id,
     priority: (a.priority as 'low' | 'medium' | 'high' | 'critical') || 'medium',
-    estimatedHoursPerWeek: a.estimated_hours_per_week,
-    status: a.status as 'active' | 'paused' | 'closed',
-    createdAt: a.created_at,
-    updatedAt: a.updated_at,
-    userName: (a.users as unknown as { name: string } | null)?.name ?? 'Unknown',
-    reqTitle: (a.reqs as unknown as { title: string } | null)?.title ?? 'Unknown',
+    estimatedHoursPerWeek: a.estimated_hours_per_week ?? 0,
+    status: (a.status as 'active' | 'paused' | 'closed') || 'active',
+    createdAt: a.created_at ?? '',
+    updatedAt: a.updated_at ?? '',
+    userName: a.users?.name ?? 'Unknown',
+    reqTitle: a.reqs?.title ?? 'Unknown',
   }));
 }

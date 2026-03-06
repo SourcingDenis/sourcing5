@@ -19,7 +19,7 @@ import type {
  * Integrates live capacity, funnel, and action item data per report
  */
 export async function generateAgenda(
-  managerId: string,
+  _managerId: string,
   reportId: string
 ): Promise<GeneratedAgenda> {
   const currentWeekStr = getWeekStartDate().toISOString().split('T')[0];
@@ -49,7 +49,7 @@ export async function generateAgenda(
       .from('reqs')
       .select('id, title')
       .in('id', assignedReqIds);
-    reqTitleMap = new Map((reqRows ?? []).map((r) => [r.id, r.title]));
+    reqTitleMap = new Map((reqRows as { id: string; title: string }[] ?? []).map((r) => [r.id, r.title]));
   }
 
   // ── FUNNEL ALERTS ───────────────────────────────────────────
@@ -103,7 +103,7 @@ export async function generateAgenda(
       .select('id, title')
       .in('id', activeReqIds);
     const stalledReqTitleMap = new Map(
-      (stalledReqRows ?? []).map((r) => [r.id, r.title])
+      (stalledReqRows as { id: string; title: string }[] ?? []).map((r) => [r.id, r.title])
     );
 
     for (const reqId of activeReqIds) {
@@ -181,7 +181,6 @@ export async function generateAgenda(
     reportId,
     reportName:  reportUser?.name ?? reportId,
     generatedAt: new Date().toISOString(),
-    weekOf: currentWeekStr, // Added to satisfy potential interface requirements from the other branch
     sections,
     rawData: {
       loadRatio,
