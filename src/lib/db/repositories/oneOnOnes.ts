@@ -48,11 +48,14 @@ export const oneOnOnesRepository = {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
-      ...mapRow(row),
-      managerName: (row.manager as unknown as { name: string } | null)?.name ?? 'Unknown',
-      reportName:  (row.report  as unknown as { name: string } | null)?.name ?? 'Unknown',
-    }));
+    return (data ?? []).map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        ...mapRow(row),
+        managerName: (row.manager as { name: string } | null)?.name ?? 'Unknown',
+        reportName:  (row.report  as { name: string } | null)?.name ?? 'Unknown',
+      };
+    });
   },
 
   async listByReport(reportId: string): Promise<OneOnOne[]> {

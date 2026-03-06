@@ -51,11 +51,14 @@ export const outreachSamplesRepository = {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
-      ...mapRow(row),
-      userName: (row.users as unknown as { name: string } | null)?.name ?? 'Unknown',
-      reqTitle: (row.reqs as unknown as { title: string } | null)?.title ?? 'Unknown',
-    }));
+    return (data ?? []).map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        ...mapRow(row),
+        userName: (row.users as { name: string } | null)?.name ?? 'Unknown',
+        reqTitle: (row.reqs as { title: string } | null)?.title ?? 'Unknown',
+      };
+    });
   },
 
   // Returns samples for a sourcer since a given date, with joined user+req
@@ -79,11 +82,14 @@ export const outreachSamplesRepository = {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
-      ...mapRow(row),
-      userName: (row.users as unknown as { name: string } | null)?.name ?? 'Unknown',
-      reqTitle: (row.reqs as unknown as { title: string } | null)?.title ?? 'Unknown',
-    }));
+    return (data ?? []).map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        ...mapRow(row),
+        userName: (row.users as { name: string } | null)?.name ?? 'Unknown',
+        reqTitle: (row.reqs as { title: string } | null)?.title ?? 'Unknown',
+      };
+    });
   },
 
   // Returns all samples since a date with joined user+req (used for correlation)
@@ -105,11 +111,14 @@ export const outreachSamplesRepository = {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
-      ...mapRow(row),
-      userName: (row.users as unknown as { name: string } | null)?.name ?? 'Unknown',
-      reqTitle: (row.reqs as unknown as { title: string } | null)?.title ?? 'Unknown',
-    }));
+    return (data ?? []).map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        ...mapRow(row),
+        userName: (row.users as { name: string } | null)?.name ?? 'Unknown',
+        reqTitle: (row.reqs as { title: string } | null)?.title ?? 'Unknown',
+      };
+    });
   },
 
   async create(input: CreateOutreachSampleInput): Promise<OutreachSample | null> {

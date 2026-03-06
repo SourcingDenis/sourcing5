@@ -18,9 +18,87 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 export type Database = {
   public: {
     Tables: {
-      users: { /* ... same as your existing code ... */ };
-      teams: { /* ... same as your existing code ... */ };
-      reqs: { /* ... same as your existing code ... */ };
+      users: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          role: string;
+          manager_id: string | null;
+          weekly_capacity_hours: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          role: string;
+          manager_id?: string | null;
+          weekly_capacity_hours?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          email?: string;
+          role?: string;
+          manager_id?: string | null;
+          weekly_capacity_hours?: number;
+          is_active?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      teams: {
+        Row: {
+          id: string;
+          name: string;
+          lead_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          lead_id: string;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          lead_id?: string;
+        };
+        Relationships: [];
+      };
+      reqs: {
+        Row: {
+          id: string;
+          title: string;
+          function: string;
+          level: string;
+          location: string;
+          priority: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          title: string;
+          function: string;
+          level: string;
+          location: string;
+          priority?: string;
+          created_at?: string;
+        };
+        Update: {
+          title?: string;
+          function?: string;
+          level?: string;
+          location?: string;
+          priority?: string;
+        };
+        Relationships: [];
+      };
       assignments: {
         Row: {
           id: string;
@@ -48,13 +126,88 @@ export type Database = {
           status?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
-      capacity_snapshots: { /* ... same as your existing code ... */ };
-      funnel_metrics: { /* ... same as your existing code ... */ };
-      app_settings: { /* ... same as your existing code ... */ };
-      
-      // --- COMBINED TABLES BELOW ---
-
+      capacity_snapshots: {
+        Row: {
+          id: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at?: string;
+        };
+        Update: {
+          total_capacity_hours?: number;
+          allocated_hours?: number;
+          load_ratio?: number;
+        };
+        Relationships: [];
+      };
+      funnel_metrics: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          screens_booked: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          screens_booked?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+          screens_booked?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      app_settings: {
+        Row: {
+          key: string;
+          value: string;
+          description: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          value: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          value?: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       one_on_ones: {
         Row: {
           id: string;
@@ -82,8 +235,8 @@ export type Database = {
           summary?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
-
       action_items: {
         Row: {
           id: string;
@@ -111,8 +264,8 @@ export type Database = {
           status?: 'open' | 'done';
           updated_at?: string;
         };
+        Relationships: [];
       };
-
       outreach_samples: {
         Row: {
           id: string;
@@ -134,8 +287,8 @@ export type Database = {
           message_text?: string;
           week_start_date?: string;
         };
+        Relationships: [];
       };
-
       quality_reviews: {
         Row: {
           id: string;
@@ -164,6 +317,7 @@ export type Database = {
           clarity_score?: number;
           cta_score?: number;
         };
+        Relationships: [];
       };
       experiments: {
         Row: {
@@ -193,6 +347,7 @@ export type Database = {
           end_date?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       experiment_variants: {
         Row: {
@@ -213,6 +368,7 @@ export type Database = {
           name?: string;
           description?: string;
         };
+        Relationships: [];
       };
       experiment_results: {
         Row: {
@@ -236,7 +392,65 @@ export type Database = {
           replies?: number;
           positive_replies?: number;
         };
+        Relationships: [];
+      };
+      ashby_roles: {
+        Row: {
+          id: string;
+          name: string;
+          type: string;
+          parent_id: string | null;
+          ashby_data: Record<string, unknown> | null;
+          synced_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          name: string;
+          type: string;
+          parent_id?: string | null;
+          ashby_data?: Record<string, unknown> | null;
+          synced_at: string;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          type?: string;
+          parent_id?: string | null;
+          ashby_data?: Record<string, unknown> | null;
+          synced_at?: string;
+        };
+        Relationships: [];
+      };
+      sourcer_role_assignments: {
+        Row: {
+          id: string;
+          user_id: string;
+          ashby_role_id: string | null;
+          req_id: string | null;
+          notes: string | null;
+          assigned_at: string;
+          assigned_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          ashby_role_id?: string | null;
+          req_id?: string | null;
+          notes?: string | null;
+          assigned_at?: string;
+          assigned_by?: string | null;
+        };
+        Update: {
+          ashby_role_id?: string | null;
+          req_id?: string | null;
+          notes?: string | null;
+          assigned_by?: string | null;
+        };
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
   };
 };

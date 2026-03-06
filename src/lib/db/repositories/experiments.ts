@@ -43,9 +43,10 @@ export const experimentsRepository = {
       return null;
     }
 
+    const row = data as Record<string, unknown>;
     return {
-      ...mapExperimentRow(data),
-      ownerName: (data.users as { name: string } | null)?.name ?? 'Unknown',
+      ...mapExperimentRow(row),
+      ownerName: (row.users as { name: string } | null)?.name ?? 'Unknown',
     };
   },
 

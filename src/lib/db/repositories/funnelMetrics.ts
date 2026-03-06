@@ -92,11 +92,14 @@ export const funnelMetricsRepository = {
       return [];
     }
 
-    return (data ?? []).map((row) => ({
-      ...mapRow(row),
-      userName: (row.users as unknown as { name: string } | null)?.name ?? 'Unknown',
-      reqTitle: (row.reqs as unknown as { title: string } | null)?.title ?? 'Unknown',
-    }));
+    return (data ?? []).map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        ...mapRow(row),
+        userName: (row.users as { name: string } | null)?.name ?? 'Unknown',
+        reqTitle: (row.reqs as { title: string } | null)?.title ?? 'Unknown',
+      };
+    });
   },
 
   // Upsert: create or update by (user_id, req_id, week_start_date)
