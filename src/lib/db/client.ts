@@ -18,13 +18,200 @@ export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 export type Database = {
   public: {
     Tables: {
-      users: { /* ... same as your existing code ... */ };
-      teams: { /* ... same as your existing code ... */ };
-      reqs: { /* ... same as your existing code ... */ };
-      assignments: { /* ... same as your existing code ... */ };
-      capacity_snapshots: { /* ... same as your existing code ... */ };
-      funnel_metrics: { /* ... same as your existing code ... */ };
-      app_settings: { /* ... same as your existing code ... */ };
+      users: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          role: 'lead' | 'sourcer';
+          manager_id: string | null;
+          weekly_capacity_hours: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          role?: 'lead' | 'sourcer';
+          manager_id?: string | null;
+          weekly_capacity_hours?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          email?: string;
+          role?: 'lead' | 'sourcer';
+          manager_id?: string | null;
+          weekly_capacity_hours?: number;
+          is_active?: boolean;
+          updated_at?: string;
+        };
+      };
+      teams: {
+        Row: {
+          id: string;
+          name: string;
+          lead_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          lead_id: string;
+          created_at?: string;
+        };
+        Update: {
+          name?: string;
+          lead_id?: string;
+        };
+      };
+      reqs: {
+        Row: {
+          id: string;
+          title: string;
+          function: string;
+          level: string;
+          location: string;
+          priority: 'low' | 'medium' | 'high' | 'critical';
+          created_at: string;
+          ashby_job_id: string | null;
+          ashby_status: string | null;
+          last_synced_at: string | null;
+        };
+        Insert: {
+          id: string;
+          title: string;
+          function: string;
+          level: string;
+          location: string;
+          priority?: 'low' | 'medium' | 'high' | 'critical';
+          created_at?: string;
+          ashby_job_id?: string | null;
+          ashby_status?: string | null;
+          last_synced_at?: string | null;
+        };
+        Update: {
+          title?: string;
+          function?: string;
+          level?: string;
+          location?: string;
+          priority?: 'low' | 'medium' | 'high' | 'critical';
+          ashby_job_id?: string | null;
+          ashby_status?: string | null;
+          last_synced_at?: string | null;
+        };
+      };
+      assignments: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          priority: 'low' | 'medium' | 'high' | 'critical';
+          estimated_hours_per_week: number;
+          status: 'active' | 'paused' | 'closed';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          priority?: 'low' | 'medium' | 'high' | 'critical';
+          estimated_hours_per_week: number;
+          status?: 'active' | 'paused' | 'closed';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          req_id?: string;
+          priority?: 'low' | 'medium' | 'high' | 'critical';
+          estimated_hours_per_week?: number;
+          status?: 'active' | 'paused' | 'closed';
+          updated_at?: string;
+        };
+      };
+      capacity_snapshots: {
+        Row: {
+          id: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          week_start: string;
+          total_capacity_hours: number;
+          allocated_hours: number;
+          load_ratio: number;
+          created_at?: string;
+        };
+        Update: {
+          total_capacity_hours?: number;
+          allocated_hours?: number;
+          load_ratio?: number;
+        };
+      };
+      funnel_metrics: {
+        Row: {
+          id: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent: number;
+          replies: number;
+          positive_replies: number;
+          screens_booked: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          req_id: string;
+          week_start_date: string;
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+          screens_booked?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          outreach_sent?: number;
+          replies?: number;
+          positive_replies?: number;
+          screens_booked?: number;
+          updated_at?: string;
+        };
+      };
+      app_settings: {
+        Row: {
+          key: string;
+          value: string;
+          description: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          key: string;
+          value?: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          value?: string;
+          description?: string | null;
+          updated_at?: string;
+        };
+      };
       
       // --- COMBINED TABLES BELOW ---
 
