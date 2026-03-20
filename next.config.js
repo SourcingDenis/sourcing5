@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
+  output: 'export',
+  basePath: isProd ? '/sourcing5' : '',
+  assetPrefix: isProd ? '/sourcing5/' : '',
   reactStrictMode: true,
   experimental: {
     serverActions: {
@@ -18,6 +23,9 @@ const nextConfig = {
   onDemandEntries: {
     maxInactiveAge: 60 * 60 * 1000,
     pagesBufferLength: 5,
+  },
+  images: {
+    unoptimized: true,
   },
 }
 
