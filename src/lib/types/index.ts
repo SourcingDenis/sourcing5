@@ -9,6 +9,10 @@ export type {
   TeamCapacityMetrics,
   UserLoad,
   CapacitySnapshot,
+  ModuleHealthStatus,
+  ModuleHealth,
+  InsightAlert,
+  InsightsDashboard,
 } from './metrics';
 
 // --- Resolved Conflict: Combined One-on-One and Quality Types ---

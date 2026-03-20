@@ -57,3 +57,38 @@ export interface TeamCapacityMetrics {
   allocatedHours: number;
   utilizationRatio: number;
 }
+
+// ----------------------------------------------------------------
+// AI Executive Insights Dashboard
+// ----------------------------------------------------------------
+
+export type ModuleHealthStatus = 'healthy' | 'warning' | 'critical' | 'no_data';
+
+export interface ModuleHealth {
+  status: ModuleHealthStatus;
+  score: number; // 0-100
+  headline: string;
+  details: string[];
+  link: string;
+}
+
+export interface InsightAlert {
+  level: 'critical' | 'warning' | 'info';
+  module: string;
+  message: string;
+}
+
+export interface InsightsDashboard {
+  timestamp: string;
+  overallHealthScore: number; // 0-100
+  riskLevel: 'low' | 'medium' | 'high';
+  modules: {
+    capacity: ModuleHealth;
+    funnel: ModuleHealth;
+    quality: ModuleHealth;
+    experiments: ModuleHealth;
+  };
+  insights: string[];
+  recommendations: string[];
+  alerts: InsightAlert[];
+}
