@@ -11,15 +11,6 @@
   NEXT_PUBLIC_APP_URL = "https://sourcer-os.netlify.app"
   NODE_VERSION = "18.17.0"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
 
 [dev]
   command = "npm run dev"

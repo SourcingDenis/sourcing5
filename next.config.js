@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig = {
-  output: 'export',
-  basePath: isProd ? '/sourcing5' : '',
-  assetPrefix: isProd ? '/sourcing5/' : '',
   reactStrictMode: true,
   experimental: {
     serverActions: {
