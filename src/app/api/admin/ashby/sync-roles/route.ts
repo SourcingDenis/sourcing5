@@ -50,43 +50,48 @@ async function fetchAshbyDepartments(apiKey: string, baseUrl: string): Promise<A
 }
 
 export async function POST() {
-  const [apiKeySetting, baseUrlSetting] = await Promise.all([
-    settingsRepository.getByKey('ashby_api_key'),
-    settingsRepository.getByKey('ashby_base_url'),
-  ]);
-
-  if (!apiKeySetting?.value?.trim()) {
-    return NextResponse.json(
-      { error: 'Ashby API key is not configured. Please add it in Settings.' },
-      { status: 503 }
-    );
-  }
-
-  const apiKey = apiKeySetting.value.trim();
-  const baseUrl = baseUrlSetting?.value || 'https://api.ashbyhq.com';
-
-  let departments: AshbyDepartment[];
   try {
-    departments = await fetchAshbyDepartments(apiKey, baseUrl);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    return NextResponse.json({ error: `Failed to fetch from Ashby: ${message}` }, { status: 502 });
+    const [apiKeySetting, baseUrlSetting] = await Promise.all([
+      settingsRepository.getByKey('ashby_api_key'),
+      settingsRepository.getByKey('ashby_base_url'),
+    ]);
+
+    if (!apiKeySetting?.value?.trim()) {
+      return NextResponse.json(
+        { error: 'Ashby API key is not configured. Please add it in Settings.' },
+        { status: 503 }
+      );
+    }
+
+    const apiKey = apiKeySetting.value.trim();
+    const baseUrl = baseUrlSetting?.value || 'https://api.ashbyhq.com';
+
+    let departments: AshbyDepartment[];
+    try {
+      departments = await fetchAshbyDepartments(apiKey, baseUrl);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      return NextResponse.json({ error: `Failed to fetch from Ashby: ${message}` }, { status: 502 });
+    }
+
+    const roles: Omit<AshbyRole, 'createdAt'>[] = departments
+      .filter((d) => !d.isArchived)
+      .map((d) => ({
+        id: d.id,
+        name: d.name,
+        type: 'department',
+        parentId: d.parentId || null,
+        ashbyData: d as unknown as Record<string, unknown>,
+        syncedAt: new Date().toISOString(),
+      }));
+
+    const count = await ashbyRolesRepository.upsertMany(roles);
+
+    return NextResponse.json({
+      data: { synced: count, total: roles.length },
+    });
+  } catch (error) {
+    console.error('Unexpected error in POST /api/admin/ashby/sync-roles:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-
-  const roles: Omit<AshbyRole, 'createdAt'>[] = departments
-    .filter((d) => !d.isArchived)
-    .map((d) => ({
-      id: d.id,
-      name: d.name,
-      type: 'department',
-      parentId: d.parentId || null,
-      ashbyData: d as unknown as Record<string, unknown>,
-      syncedAt: new Date().toISOString(),
-    }));
-
-  const count = await ashbyRolesRepository.upsertMany(roles);
-
-  return NextResponse.json({
-    data: { synced: count, total: roles.length },
-  });
 }
