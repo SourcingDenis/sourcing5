@@ -32,6 +32,34 @@ export interface AshbyJob {
   teamName?: string;
 }
 
+// Email Sequence types
+export interface AshbyEmailSequenceStep {
+  id: string;
+  sequenceId: string;
+  stepOrder: number;
+  type: 'Email' | 'Task' | 'Call';
+  delayDays: number;
+  subject?: string;
+  body?: string;
+  isAutomatic: boolean;
+}
+
+export interface AshbyEmailSequence {
+  id: string;
+  name: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  steps?: AshbyEmailSequenceStep[];
+  stepCount?: number;
+}
+
+export interface AshbyEmailSequenceUpdatePayload {
+  stepId: string;
+  subject?: string;
+  body?: string;
+}
+
 export interface AshbyListResponse<T> {
   success: true;
   results: T[];
