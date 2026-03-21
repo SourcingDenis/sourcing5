@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiClient } from '@/lib/services/gemini/client';
 import type { AshbyEmailSequence, AshbyEmailSequenceStep } from '@/lib/services/ashby/types';
 
 export interface StepAnalysis {
@@ -17,14 +17,6 @@ export interface SequenceAnalysis {
   overallAssessment: string;
   steps: StepAnalysis[];
   generalRecommendations: string[];
-}
-
-function getGeminiClient(): GoogleGenerativeAI {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is not set.');
-  }
-  return new GoogleGenerativeAI(apiKey);
 }
 
 function buildPrompt(sequence: AshbyEmailSequence): string {
